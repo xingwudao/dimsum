@@ -93,3 +93,10 @@ cp build/bin/compute-row-similarity bin/
 所以，我再一次鼓吹：
 
 > 不要为了分布式而分布式，你没有那么大的数据。
+
+# 广告
+
+想系统学习推荐系统，请关注我的专栏：
+
+[《推荐系统36式》](https://time.geekbang.org/column/intro/74)
+
