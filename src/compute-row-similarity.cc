@@ -44,17 +44,17 @@ int main(int argc, char** argv) {
     po::variables_map vm;
     po::store(po::parse_command_line(argc, argv, desc), vm);
     po::notify(vm);
-    if (vm.count("help")
-            || vm.count("data")==0
-            || vm.count("output") == 0) {
-        cout << desc << endl;
-        return 0;
-    }
     if (vm.count("version")) {
         std::cout <<"the current version = "
             << DIMSUM_VERSION_MAJOR
             << "." << DIMSUM_VERSION_MINOR
             << std::endl;
+        return 0;
+    }
+    if (vm.count("help")
+            || vm.count("data")==0
+            || vm.count("output") == 0) {
+        cout << desc << endl;
         return 0;
     }
     bool mirror = false;
