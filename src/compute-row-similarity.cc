@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2018- kaijiang
+ * Copyright (C) 2018- xingwudao
  *
  * Author:
- *	kaijiang
+ *	xingwudao
  *
  * Source:
- *	https://github.com/kaijiang/dimsum
+ *	https://github.com/xingwudao/dimsum
  *
  * This file is a part of dimsum tool
  *
