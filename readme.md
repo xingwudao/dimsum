@@ -42,7 +42,9 @@ DIMSUM算法的Reduce阶段就是求和，得到行向量i和行向量k之间的
 
 ## 编译
 
-仅支持Linux平台,如果支持其他平台，请自行编译boost库
+1. 仅支持Linux平台,如果支持其他平台，请自行编译boost库
+2. 依赖boost， openmp
+3. 依赖c++11(g++ 在4.8以上)
 
 ```
 git clone --recursive https://github.com/xingwudao/dimsum.git
