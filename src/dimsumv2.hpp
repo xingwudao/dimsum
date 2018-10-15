@@ -1,7 +1,25 @@
-// Copyright 2018 ke.com
-// Created by chenkaijiang001@ke.com
-// 2018.10
-// compute row vector pair's similarity
+/*
+ * Copyright (C) 2018- kaijiang
+ *
+ * Author:
+ *	kaijiang
+ *
+ * Source:
+ *	https://github.com/kaijiang/dimsum
+ *
+ * This file is a part of dimsum tool
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ */
 
 #ifndef SRC_DIMSUMV2_HPP
 #define SRC_DIMSUMV2_HPP
@@ -37,7 +55,7 @@ using std::cerr;
 using std::default_random_engine;
 using std::uniform_real_distribution;
 
-namespace aisearch {
+namespace kaijiang {
 
 typedef vector< pair<uint32_t, float> > SparseVector;
 
@@ -243,5 +261,5 @@ class PairSimilarityCaculator {
         uint32_t total_; // 非零元素个数
         vector<float> similarity_; // 相似度结果
 };
-}  // namespace aisearch
+}  // namespace kaijiang
 #endif  // SRC_DIMSUMV2_HPP
