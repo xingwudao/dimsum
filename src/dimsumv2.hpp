@@ -94,7 +94,7 @@ class PairSimilarityCaculator {
             // 矩阵的行和列，及非零元素数
             fin >> m_ >> n_ >> total_;
             SparseVector cells_of_column_vector;
-            row_vector_mod_ =  vector<float>(m_, 0.0);
+            row_vector_mod_ =  vector<float>(m_, 0.0001);
             matrix_ = vector<SparseVector>(n_, cells_of_column_vector);
             // m和n从0开始编号
             while (fin >> m >> n >> cell) {
@@ -138,7 +138,7 @@ class PairSimilarityCaculator {
 
             // row_vector_mod_ 是行向量的模，反映了用户评价物品的个数,在map阶段需要使用
             // row_vector_mod_v2 用来最后计算相似度时做分母用的
-            vector<float> row_vector_mod_v2 = row_vector_mod_;
+            vector<float> row_vector_mod_v2 = vector<float>(row_vector_mod_.size(), 0.0001);
 #pragma omp parallel for num_threads(thread_number) if(parallelism_enabled)
             for (auto i = 0; i < row_vector_mod_.size(); i++) {
                 row_vector_mod_[i] = sqrt(row_vector_mod_[i]);
@@ -147,8 +147,6 @@ class PairSimilarityCaculator {
                 // 参见论文公式中的分母，取gama和行向量模较小那个
                 if (row_vector_mod_v2[i] > gama)
                     row_vector_mod_v2[i] = gama;
-                if (row_vector_mod_v2[i] < 0.0001)
-                    row_vector_mod_v2[i] = 0.0001;
             }
 
             // 随机数发生器
