@@ -135,9 +135,20 @@ class PairSimilarityCaculator {
             // 计算行向量的模
             if(thread_number > row_vector_mod_.size())
                 thread_number = row_vector_mod_.size();
+
+            // row_vector_mod_ 是行向量的模，反映了用户评价物品的个数,在map阶段需要使用
+            // row_vector_mod_v2 用来最后计算相似度时做分母用的
+            vector<float> row_vector_mod_v2 = row_vector_mod_;
 #pragma omp parallel for num_threads(thread_number) if(parallelism_enabled)
             for (auto i = 0; i < row_vector_mod_.size(); i++) {
                 row_vector_mod_[i] = sqrt(row_vector_mod_[i]);
+                row_vector_mod_v2[i] = row_vector_mod_[i];
+
+                // 参见论文公式中的分母，取gama和行向量模较小那个
+                if (row_vector_mod_v2[i] > gama)
+                    row_vector_mod_v2[i] = gama;
+                if (row_vector_mod_v2[i] < 0.0001)
+                    row_vector_mod_v2[i] = 0.0001;
             }
 
             // 随机数发生器
@@ -200,8 +211,6 @@ class PairSimilarityCaculator {
             for (auto i = 0; i < thread_number; i++) {
                 output_streams.push_back(new ostringstream);
             }
-            float mod1 = 1.0;
-            float mod2 = 1.0;
 #pragma omp parallel for num_threads(thread_number) if(parallelism_enabled)
             for (uint64_t n = 0; n < cells; n++) {
                 for (auto j = 0; j < thread_number; j++){
@@ -209,21 +218,15 @@ class PairSimilarityCaculator {
                 }
                 if (similarity_[n] < 0.0001)
                     continue;
-                // 反向计算下三角阵中的坐标<i, j>, 其中i > j
+                // 反向计算下三角阵中的坐标<i, j>, 其中i > j, 注意不包含对角线。
                 // 计算方法是：
-                // 1. 下三角阵累积到当前行末尾一共有多少个元素假如是n；
+                // 1. 下三角阵累积到当前第i行末尾一共有多少个元素? 假设是n个，那么这时n = i(i+1)/2；
                 // 2. 计算对应的i（解一个一元二次方程，取正根），为(sqrt(8*n)-1)/2
                 // 3. 实际上n不一定对应第i行的末尾，所以i会是一个非整数，所以加1取整i = uint32_t((sqrt(8*(double)n)-1)/2 + 1)
                 // 4. 根据原来下三角阵下标计算方法：n = i(i-1)/2 + j，计算得到j
                 uint32_t i = uint32_t((sqrt(8*(double)n)-1)/2 + 1);
                 uint32_t j = n - i * (i - 1)/2;
-                mod1 = gama < row_vector_mod_[i] ?
-                    gama : row_vector_mod_[i];
-                mod2 = gama < row_vector_mod_[j] ?
-                    gama : row_vector_mod_[j];
-                if (mod2 < 0.0001 || mod2 < 0.0001)
-                    continue;
-                similarity_[n] /= mod1 * mod2;
+                similarity_[n] /= row_vector_mod_v2[i] * row_vector_mod_v2[j];
                 if (similarity_[n] < threshold_)
                     continue;
                 int thread_index = omp_get_thread_num();
@@ -238,6 +241,9 @@ class PairSimilarityCaculator {
                                 << similarity_[n] << "\n";
                 }
             }
+            // 使用字符串流写入文件比较慢，
+            // 采用了内存中存下写入文件内容(可以并行拼接)，
+            // 最后以二进制同时写入的方式
             ofstream fout(output_name, ofstream::binary);
             if (!fout.is_open()) {
                 cerr << output_name << " open failed." << endl;
