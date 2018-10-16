@@ -62,6 +62,10 @@ typedef vector< pair<uint32_t, float> > SparseVector;
 // 计算行向量两两相似度的DIMSUM算法
 class PairSimilarityCaculator {
     public:
+        PairSimilarityCaculator(float threshold = 0.1) 
+            threshold_(threshold){
+        }
+
         PairSimilarityCaculator(const char* data_file,
                 float threshold = 0.1) {
             threshold_ = threshold;
@@ -69,6 +73,15 @@ class PairSimilarityCaculator {
         }
 
         virtual ~PairSimilarityCaculator() {
+        }
+
+        // 修改相似度阈值
+        // 参数：
+        //      threshold -- 阈值
+        // 返回：
+        //      无
+        void SetThreshold(float threshold) {
+            threshold_ = threshold;
         }
 
         // 加载COO格式矩阵
@@ -88,20 +101,20 @@ class PairSimilarityCaculator {
                 return 0;
             }
 
-            uint32_t m = 0;
-            uint32_t n = 0;
-            float cell = 0.0;
             // 矩阵的行和列，及非零元素数
             fin >> m_ >> n_ >> total_;
             SparseVector cells_of_column_vector;
             row_vector_mod_ =  vector<float>(m_, 0.0001);
             matrix_ = vector<SparseVector>(n_, cells_of_column_vector);
-            // m和n从0开始编号
+
+            // 注意：m和n从0开始编号
+            uint32_t m = 0;
+            uint32_t n = 0;
+            float cell = 0.0;
             while (fin >> m >> n >> cell) {
                 matrix_[n].push_back(pair<uint32_t, float>(m, cell));
                 row_vector_mod_[m] += cell * cell;
             }
-            // 作为矩阵的维度，需要自增1
             return total_;
         }
 
