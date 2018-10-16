@@ -62,7 +62,7 @@ typedef vector< pair<uint32_t, float> > SparseVector;
 // 计算行向量两两相似度的DIMSUM算法
 class PairSimilarityCaculator {
     public:
-        PairSimilarityCaculator(float threshold = 0.1) 
+        PairSimilarityCaculator(float threshold = 0.1):
             threshold_(threshold){
         }
 
