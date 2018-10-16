@@ -39,7 +39,7 @@ int main(int argc, char** argv) {
         ("data,d", po::value<std::string>(), "matrix data file")
         ("output,o", po::value<std::string>(), "outout similarity to")
         ("mirror",  "output similarity <i, j> and <j, i> same time")
-        ("threshold,t", po::value<float>()->default_value(0.2), "similarity threshold");
+        ("threshold,t", po::value<float>()->default_value(0.2), "similarity threshold")
         ("precision,p", po::value<uint32_t>()->default_value(2), "similarity value precision");
 
     po::variables_map vm;
