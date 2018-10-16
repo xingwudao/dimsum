@@ -125,10 +125,11 @@ class PairSimilarityCaculator {
         //             例如i和j相似度为0,8，会保存两行：
         //             i j 0.8
         //             j i 0.8
+        //     precision: 保存精度，默认为2（小数点后两位）
         // 返回：
         //     阈值之内的结果数
         //
-        uint32_t Caculate(const char* output_name, bool mirror) {
+        uint32_t Caculate(const char* output_name, bool mirror, uint32_t precision = 2) {
             // m个行向量之间相似度，是一个对角方形矩阵，所以只用保存下三角即可
             // (i,k)的相似度保存在i * (i - 1)/2 + k，i比k大。如果查询时i比k小，
             // 即查询上三角阵，则交换i和k再查询下三角阵。
@@ -242,12 +243,12 @@ class PairSimilarityCaculator {
                     continue;
                 int thread_index = omp_get_thread_num();
                 (*(output_streams[thread_index])) << std::fixed
-                            << setprecision(2)
+                            << setprecision(precision)
                             << i << " " << j << " "
                             << similarity_[n] << "\n";
                 if (mirror) {
                     (*(output_streams[thread_index])) << std::fixed
-                                << setprecision(2)
+                                << setprecision(precision)
                                 << j << " " << i << " "
                                 << similarity_[n] << "\n";
                 }

@@ -40,6 +40,7 @@ int main(int argc, char** argv) {
         ("output,o", po::value<std::string>(), "outout similarity to")
         ("mirror",  "output similarity <i, j> and <j, i> same time")
         ("threshold,t", po::value<float>()->default_value(0.2), "similarity threshold");
+        ("precision,p", po::value<uint32_t>()->default_value(2), "similarity value precision");
 
     po::variables_map vm;
     po::store(po::parse_command_line(argc, argv, desc), vm);
@@ -63,10 +64,11 @@ int main(int argc, char** argv) {
     std::string matrix_data = vm["data"].as<std::string>();
     std::string output = vm["output"].as<std::string>();
     float threshold = vm["threshold"].as<float>();
+    uint32_t precision = vm["precision"].as<uint32_t>();
     cout << "[0] start loading matrix." << endl;
     kaijiang::PairSimilarityCaculator caculator(matrix_data.c_str(), threshold);
     cout << "[1] loading matrix finished." << endl;
-    caculator.Caculate(output.c_str(), mirror);
+    caculator.Caculate(output.c_str(), mirror, precision);
     cout << "[2] caculating similarity finished." << endl;
     return 0;
 }
